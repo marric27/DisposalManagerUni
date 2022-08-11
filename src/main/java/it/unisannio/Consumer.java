@@ -41,11 +41,6 @@ public class Consumer {
 	
 	@KafkaListener(topics = "topic", groupId = "group")
 	public void listen(JsonNode jsonNode) throws JsonMappingException, JsonProcessingException, ParseException, ClassNotFoundException, SQLException {
-
-		// usare instant e prendere come formato solo l'ora per fare il confronto con la fascia oraria che ci serve
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String date1 = "2021-08-17 19:10:05";
-		Date fromDate = sdf.parse(date1);
 		
 
 		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
@@ -55,8 +50,8 @@ public class Consumer {
 		if(s.getTagID().startsWith("57434F4D50")) {
 			// verifica se l'id è già presente con query al db e decidere come gestire la situazione 
 			//if(!service.existsById(s.getTagID())) {
-			if(s.getOccurency()>25000) {
-				if(s.getTimestamp().after(fromDate)) {
+			if(s.getOccurency()>25000) { // TODO valore soglia da definire 
+				if(s.getTimestamp().getHour()<20 && s.getTimestamp().getHour()>17) { // soglia da scegliere
 					System.out.println("Received User information : " + jsonNode);
 					// carica in db
 					service.saveSample(s);
