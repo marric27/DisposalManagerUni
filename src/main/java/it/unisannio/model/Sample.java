@@ -18,95 +18,93 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @Entity
 @Table(name="records")
-@JsonPropertyOrder({"TagID", "Timestamp", "TruckID", "Occurency", "Latitude", "Longitude"})
+@JsonPropertyOrder({"tagID", "timestamp", "truckID", "occurency", "latitude", "longitude"})
 public class Sample  implements Serializable { 
 	
 	@Id
 	//@GeneratedValue(generator="system-uuid")
 	//@GenericGenerator(name="system-uuid", strategy = "uuid")
-	String TagID;
-	String TruckID;
-	String Latitude;
-	String Longitude;
-	int Occurency;
-	LocalDateTime Timestamp;
+	String tagID;
+	String truckID;
+	Double latitude;
+	Double longitude;
+	int occurency;
+	LocalDateTime timestamp;
 	
 	public Sample() {}
 	
-	
-	
-	public Sample(String tagID, String truckID, String latitude, String longitude, int occurency, LocalDateTime timestamp) {
+	public Sample(String tagID, String truckID, Double latitude, Double longitude, int occurency, LocalDateTime timestamp) {
 		super();
-		TagID = tagID;
-		TruckID = truckID;
-		Latitude = latitude;
-		Longitude = longitude;
-		Occurency = occurency;
-		Timestamp = timestamp;
+		this.tagID = tagID;
+		this.truckID = truckID;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.occurency = occurency;
+		this.timestamp = timestamp;
 	}
 
 
 
-	@JsonProperty("TagID")
+	@JsonProperty("tagID")
 	public String getTagID() {
-		return TagID;
+		return tagID;
 	}
-	@JsonProperty("TagID")
+	@JsonProperty("tagID")
 	public void setTagID(String tagID) {
-		TagID = tagID;
+		this.tagID = tagID;
 	}
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")//2021-07-17 18:49:39
-	@JsonProperty("Timestamp")
+	@JsonProperty("timestamp")
 	public LocalDateTime getTimestamp() {
-		return Timestamp;
+		return timestamp;
 	}
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	@JsonProperty("Timestamp")
+	@JsonProperty("timestamp")
 	public void setTimestamp(LocalDateTime timestamp) {
-		Timestamp = timestamp;
+		this.timestamp = timestamp;
 	}
-	@JsonProperty("TruckID")
+	@JsonProperty("truckID")
 	public String getTruckID() {
-		return TruckID;
+		return truckID;
 	}
-	@JsonProperty("TruckID")
+	@JsonProperty("truckID")
 	public void setTruckID(String truckID) {
-		TruckID = truckID;
+		this.truckID = truckID;
 	}
-	@JsonProperty("Occurency")
+	@JsonProperty("occurency")
 	public int getOccurency() {
-		return Occurency;
+		return occurency;
 	}
-	@JsonProperty("Occurency")
+	@JsonProperty("occurency")
 	public void setOccurency(int occurency) {
-		Occurency = occurency;
+		this.occurency = occurency;
 	}
-	@JsonProperty("Latitude")
-	public String getLatitude() {
-		return Latitude;
+	@JsonProperty("latitude")
+	public Double getLatitude() {
+		return latitude;
 	}
-	@JsonProperty("Latitude")
-	public void setLatitude(String latitude) {
-		Latitude = latitude;
+	@JsonProperty("latitude")
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
-	@JsonProperty("Longitude")
-	public String getLongitude() {
-		return Longitude;
+	@JsonProperty("longitude")
+	public Double getLongitude() {
+		return longitude;
 	}
-	@JsonProperty("Longitude")
-	public void setLongitude(String longitude) {
-		Longitude = longitude;
+	@JsonProperty("longitude")
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 
 	@Override
 	public String toString() {
-		return "Sample [TagID=" + TagID + ", Timestamp=" + Timestamp + ", TruckID=" + TruckID + ", Occurency="
-				+ Occurency + ", Latitude=" + Latitude + ", Longitude=" + Longitude + "]";
+		return "Sample [tagID=" + tagID + ", timestamp=" + timestamp + ", truckID=" + truckID + ", occurency="
+				+ occurency + ", latitude=" + latitude + ", longitude=" + longitude + "]";
 	}
 	
 	
