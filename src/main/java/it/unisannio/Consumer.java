@@ -3,6 +3,7 @@ package it.unisannio;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+import org.bson.Document;
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GeodeticCalculator;
 import org.gavaghan.geodesy.GlobalPosition;
@@ -17,25 +18,36 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.util.JSON;
 
 import it.unisannio.model.Sample;
 import it.unisannio.service.SampleService; 
 
 @Component
 public class Consumer {
-	/*
-	 * opto per una soluzione con un solo db per evitare complicazioni dovute al flusso dati continuo 
-	 * 
-	// Creating a Mongo client
-	static MongoClient mongo = new MongoClient("localhost", 27017);
-	// Accessing the database
-	MongoDatabase database = mongo.getDatabase("dbRaw2");
-	static DB db = mongo.getDB("dbRaw2");
-	static DBCollection collection = db.getCollection("samples");
-	 */
-	
+
+	//	// Creating a Mongo client
+	//	static MongoClient mongo = new MongoClient("localhost", 27017);
+	//	// Accessing the database
+	//	MongoDatabase database = mongo.getDatabase("Disposal");
+	//	static DB db = mongo.getDB("Disposal");
+	//	static DBCollection collection = db.getCollection("samples");
+
+	MongoClient mongoClient = new MongoClient();
+	MongoDatabase db = mongoClient.getDatabase("Disposal");
+	MongoCollection<Document> collection = db.getCollection("samples");
+
+
+
 	private final Logger LOG = LoggerFactory.getLogger(Consumer.class);
-	
+
 	@Autowired
 	SampleService service;
 
@@ -44,26 +56,52 @@ public class Consumer {
 	@KafkaListener(topics = "topic", groupId = "group")
 	public void listen(JsonNode jsonNode) throws JsonMappingException, JsonProcessingException, ParseException, ClassNotFoundException, SQLException {
 		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
+		LOG.info("Received Sample information : {}", jsonNode);
 
-		//if(service.existsById(s.getTagID())) System.out.println("gia esiste" + jsonNode);
+
 
 		if(s.getTagID().startsWith("57434F4D50")) {
 			// verifica se l'id è già presente con query al db e decidere come gestire la situazione 
-			//if(!service.existsById(s.getTagID())) {
+			//if(collection.find(Filters.exists("tagID")).first()==null) {
 			if(s.getOccurency()>2000) { // TODO valore soglia da definire 
 				if(s.getTimestamp().getHour()<20 && s.getTimestamp().getHour()>1) { // TODO soglia da scegliere
 					if(coordinateDistanceCompare(s)) {
-						LOG.info("Received User information : {}", jsonNode);
-						// carica in db
-						service.saveSample(s);
+						if(collection.find(Filters.exists("tagID")).first()==null) {
+							Document doc = new Document();
+							doc.put("tagID", s.getTagID());
+							doc.put("timestamp", s.getTimestamp());
+							doc.put("truckID", s.getTruckID());
+							doc.put("occurency", s.getOccurency());
+							doc.put("latitude", s.getLatitude());
+							doc.put("longitude", s.getLongitude());
+							collection.insertOne(doc);
+							LOG.info("Sample inserted: {}", jsonNode);
+						} else {
+							Document check = collection.find(Filters.exists("tagID")).first();
+							System.out.println(check);
+							int occ = check.getInteger("occurency");
+							
+							if(s.getOccurency()>occ) {
+								Document doc = new Document();
+								doc.put("tagID", s.getTagID());
+								doc.put("timestamp", s.getTimestamp());
+								doc.put("truckID", s.getTruckID());
+								doc.put("occurency", s.getOccurency());
+								doc.put("latitude", s.getLatitude());
+								doc.put("longitude", s.getLongitude());
+								collection.insertOne(doc);
+								
+								collection.deleteOne(Filters.eq("tagID", check.get("tagID")));
+								LOG.info("Sample inserted: {}", jsonNode);
+							}
+						}
 					}
 				}
 			}
-			//} else System.out.println("questo elemento esiste gia in db : " + jsonNode);
 		}
 	}
 
-	
+
 
 	// coordinate
 	public boolean coordinateDistanceCompare(Sample s) throws JsonMappingException, JsonProcessingException {
@@ -81,10 +119,10 @@ public class Consumer {
 						String.class
 						);
 		LOG.info("Coordinate reali restituite dall'altro servizio : {}", result);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		CollectionPoint cp = mapper.readValue(result, CollectionPoint.class);
-		
+
 		realLat = cp.getLat();
 		realLon = cp.getLon();
 
@@ -92,9 +130,9 @@ public class Consumer {
 		double distance = geoCalc.calculateGeodeticCurve(reference, realPosition, disposalPoint).getEllipsoidalDistance(); // Distance between Point A and Point B 
 
 		LOG.info("Distanza in metri tra i due punti : {}", distance);
-		return distance < 50 ? true : false; // TODO soglia da definire
+		return distance < 5000 ? true : false; // TODO soglia da definire
 	}
-	
+
 	public static class CollectionPoint {
 		private double lat, lon;
 		public CollectionPoint() {};
@@ -109,11 +147,3 @@ public class Consumer {
 		public void setLon(double lon) { this.lon = lon; }
 	}
 }
-
-/* TODO 
- * 2- finire di implementare le ricerche di anomalie (duplicati)
- * 4- usare un solo db e filtrare appena arrivano i dati
- * 5!!! - capire il flusso di dati come avviene (L'id è univoco?) l'id non è univoco = esistono piu disposal nel log con id uguale -> vanno filtrati
- */
-
-
