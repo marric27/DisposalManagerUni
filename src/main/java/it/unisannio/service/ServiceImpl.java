@@ -16,9 +16,8 @@ public class ServiceImpl implements SampleService {
 	SampleDao sampleDao;
 
 	@Override
-	public Optional<Sample> getSampleById(String id) {
-		
-		return sampleDao.findById(id);
+	public Optional<Sample> getSampleByTagId(String id) {
+		return sampleDao.findByTagID(id);
 	}
 
 	@Override
@@ -34,6 +33,11 @@ public class ServiceImpl implements SampleService {
 	@Override
 	public List<Sample> getAllSamples() {
 		return sampleDao.findAll();
+	}
+
+	@Override
+	public void deleteSampleByTagId(String tagid) {
+		sampleDao.deleteByTagID(tagid);
 	}
 
 }

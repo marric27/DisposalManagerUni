@@ -3,7 +3,6 @@ package it.unisannio;
 import java.sql.SQLException;
 import java.text.ParseException;
 
-import org.bson.Document;
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GeodeticCalculator;
 import org.gavaghan.geodesy.GlobalPosition;
@@ -18,34 +17,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.util.JSON;
 
 import it.unisannio.model.Sample;
 import it.unisannio.service.SampleService; 
 
 @Component
 public class Consumer {
-
-	//	// Creating a Mongo client
-	//	static MongoClient mongo = new MongoClient("localhost", 27017);
-	//	// Accessing the database
-	//	MongoDatabase database = mongo.getDatabase("Disposal");
-	//	static DB db = mongo.getDB("Disposal");
-	//	static DBCollection collection = db.getCollection("samples");
-
-	MongoClient mongoClient = new MongoClient();
-	MongoDatabase db = mongoClient.getDatabase("Disposal");
-	MongoCollection<Document> collection = db.getCollection("samples");
-
-
-
 	private final Logger LOG = LoggerFactory.getLogger(Consumer.class);
 
 	@Autowired
@@ -58,20 +35,20 @@ public class Consumer {
 		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
 		LOG.info("Received Sample information : {}", jsonNode);
 
-
-
 		if(s.getTagID().startsWith("57434F4D50")) {
 			// verifica se l'id è già presente con query al db e decidere come gestire la situazione 
 			//if(collection.find(Filters.exists("tagID")).first()==null) {
 			if(s.getOccurency()>2000) { // TODO valore soglia da definire 
 				if(s.getTimestamp().getHour()<20 && s.getTimestamp().getHour()>1) { // TODO soglia da scegliere
 					if(coordinateDistanceCompare(s)) {
-						if(collection.find(Filters.exists("tagID")).first()==null) {
-							
+						service.saveSample(s);
+						/*if(collection.find(Filters.exists("tagID")).first()==null) {
+							System.out.println("sample non esistente quindi inserisco");
 							service.saveSample(s);
 							
 							LOG.info("Sample inserted: {}", jsonNode);
 						} else {
+							System.out.println("sample esistente quindi confronto e inserisco");
 							Document check = collection.find(Filters.exists("tagID")).first();
 							System.out.println(check);
 							int occ = check.getInteger("occurency");
@@ -81,7 +58,7 @@ public class Consumer {
 								collection.deleteOne(Filters.eq("tagID", check.get("tagID")));
 								LOG.info("Sample inserted: {}", jsonNode);
 							}
-						}
+						}*/
 					}
 				}
 			}

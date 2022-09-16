@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import it.unisannio.model.Sample;
 import it.unisannio.service.KafkaProducerService;
 import it.unisannio.service.SampleService;
 
@@ -19,12 +18,13 @@ public class KafkaController {
 
 	@Autowired
 	KafkaProducerService kafkaProducer;
+
 	@Autowired
 	SampleService service;
 
 	@GetMapping("/producer")
 	public String hello() {
-		System.out.println(service.getAllSamples());
+		System.out.println(service.getSampleByTagId("57434F4D501A1C191F84EB7AEDDED770826AA5659E"));
 		return "Hello";
 	}
 
