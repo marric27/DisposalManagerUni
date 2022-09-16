@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import it.unisannio.model.Sample;
 import it.unisannio.service.KafkaProducerService;
+import it.unisannio.service.SampleService;
 
 @RestController
 @RequestMapping(value = "/controller")
@@ -18,9 +19,12 @@ public class KafkaController {
 
 	@Autowired
 	KafkaProducerService kafkaProducer;
+	@Autowired
+	SampleService service;
 
 	@GetMapping("/producer")
-	public String hello() { 
+	public String hello() {
+		System.out.println(service.getAllSamples());
 		return "Hello";
 	}
 

@@ -67,14 +67,9 @@ public class Consumer {
 				if(s.getTimestamp().getHour()<20 && s.getTimestamp().getHour()>1) { // TODO soglia da scegliere
 					if(coordinateDistanceCompare(s)) {
 						if(collection.find(Filters.exists("tagID")).first()==null) {
-							Document doc = new Document();
-							doc.put("tagID", s.getTagID());
-							doc.put("timestamp", s.getTimestamp());
-							doc.put("truckID", s.getTruckID());
-							doc.put("occurency", s.getOccurency());
-							doc.put("latitude", s.getLatitude());
-							doc.put("longitude", s.getLongitude());
-							collection.insertOne(doc);
+							
+							service.saveSample(s);
+							
 							LOG.info("Sample inserted: {}", jsonNode);
 						} else {
 							Document check = collection.find(Filters.exists("tagID")).first();
@@ -82,15 +77,7 @@ public class Consumer {
 							int occ = check.getInteger("occurency");
 							
 							if(s.getOccurency()>occ) {
-								Document doc = new Document();
-								doc.put("tagID", s.getTagID());
-								doc.put("timestamp", s.getTimestamp());
-								doc.put("truckID", s.getTruckID());
-								doc.put("occurency", s.getOccurency());
-								doc.put("latitude", s.getLatitude());
-								doc.put("longitude", s.getLongitude());
-								collection.insertOne(doc);
-								
+								service.saveSample(s);
 								collection.deleteOne(Filters.eq("tagID", check.get("tagID")));
 								LOG.info("Sample inserted: {}", jsonNode);
 							}

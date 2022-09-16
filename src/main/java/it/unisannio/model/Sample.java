@@ -4,9 +4,9 @@ package it.unisannio.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,14 +16,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-@Entity
-@Table(name="records")
+
+@Document(collection = "samples")
 @JsonPropertyOrder({"tagID", "timestamp", "truckID", "occurency", "latitude", "longitude"})
 public class Sample  implements Serializable { 
 	
 	@Id
-	//@GeneratedValue(generator="system-uuid")
-	//@GenericGenerator(name="system-uuid", strategy = "uuid")
 	String tagID;
 	String truckID;
 	Double latitude;

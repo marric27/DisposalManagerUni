@@ -1,5 +1,6 @@
 package it.unisannio.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class ServiceImpl implements SampleService {
 	@Override
 	public boolean existsById(String id) {
 		return sampleDao.existsById(id);
+	}
+
+	@Override
+	public List<Sample> getAllSamples() {
+		return sampleDao.findAll();
 	}
 
 }

@@ -1,14 +1,11 @@
 package it.unisannio.model;
 
-import java.util.List;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+@Repository
+public interface SampleDao extends MongoRepository<Sample, String> {
 
-
-public interface SampleDao extends JpaRepository<Sample, String> {
-
-	@Query(value = "SELECT * FROM tutorials", nativeQuery = true)
-	List<Sample> findAll();
+	
 
 }
