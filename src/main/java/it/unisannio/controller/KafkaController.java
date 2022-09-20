@@ -22,7 +22,7 @@ public class KafkaController {
 	@Autowired
 	SampleService service;
 
-	@GetMapping("/producer")      
+	@GetMapping("/producer")
 	public String hello() {
 		System.out.println(service.getSampleByTagId("57434F4D501A1C191F84EB7AEDDED770826AA5659E"));
 		return "Hello";

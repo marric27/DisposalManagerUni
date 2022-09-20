@@ -27,7 +27,7 @@ public class ServiceImpl implements SampleService {
 
 	@Override
 	public boolean existsById(String id) {
-		return sampleDao.existsById(id);
+		return sampleDao.existsByTagID(id);
 	}
 
 	@Override
