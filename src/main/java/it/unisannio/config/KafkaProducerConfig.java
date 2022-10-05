@@ -17,12 +17,11 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import it.unisannio.model.Sample;
 
 @Configuration
 public class KafkaProducerConfig {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-    @Value("${techgeeknext.kafka.bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean

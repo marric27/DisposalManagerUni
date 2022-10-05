@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import it.unisannio.model.Sample;
 
 @Service
 public class KafkaProducerService {

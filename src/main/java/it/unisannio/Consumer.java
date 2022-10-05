@@ -2,7 +2,6 @@ package it.unisannio;
 
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Optional;
 
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GeodeticCalculator;
@@ -54,7 +53,7 @@ public class Consumer {
 							if(s.getOccurency()>=occ) {
 								service.deleteSampleByTagId(s.getTagID());
 								service.saveSample(s);
-								LOG.info("Sample inserted: {}", jsonNode);
+								LOG.info("Sample updated: {}", jsonNode);
 							}
 						}
 					}

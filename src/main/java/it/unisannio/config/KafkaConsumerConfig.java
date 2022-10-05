@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Configuration
 public class KafkaConsumerConfig {
 
-    @Value("${techgeeknext.kafka.bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
