@@ -17,12 +17,12 @@
         html,
         body {
             height: 100%;
-            margin: 0;
+            margin: 10;
         }
 
         .leaflet-container {
-            height: 800px;
-            width: 1200px;
+            height: 600px;
+            width: 1000px;
             max-width: 100%;
             max-height: 100%;
         }
@@ -33,7 +33,6 @@
 <body>
     <div id="map" style="width: 1200; height: 800;"></div>
     <script>
-
         var map = L.map('map').setView([41.133118167, 14.783774], 14);
 
         var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -42,7 +41,13 @@
         }).addTo(map);
 
         async function getApi() {
-            const response = await fetch("http://localhost:8080/controller/samples")
+            myHeaders = new Headers({
+                'X-API-Key-Token': '365dca5f-7058-4a2e-b48a-72fc97eb7a40'
+            });
+            const response = await fetch("http://localhost:8080/api_v1/samples", {
+                headers: myHeaders,
+                method: 'GET'
+            })
             const obj = await response.json()
             return obj;
         }
@@ -51,13 +56,24 @@
             let x = await getApi();
             // Loop to access all rows 
             for (let r of x) {
-                console.log(r['latitude']);
                 var marker = L.marker([r['latitude'], r['longitude']]).addTo(map);
+                marker.bindPopup("<b>TagID: </b>" + r['tagID'] +
+                    "<br><b>Coordinates:</b> " + r['latitude'] + ", " + r['longitude'] +
+                    "<br><b>TruckId:</b> " + r['truckID'] +
+                    "<br><b>Occurrencies:</b> " + r['occurency']
+                )
             }
         })()
-		
+
     </script>
 
+    <div id="query" style="width: 400; height: 400;">
+        <label for="list">Get All Samples: </label>
+        <button type="button" onclick=wefunction()>Get Samples List!</button>
+    </div>
+    <script>
+
+    </script>
 </body>
 
 </html>
