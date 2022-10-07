@@ -1,5 +1,6 @@
 package it.unisannio.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,8 @@ public interface SampleService {
 	List<Sample> getAllSamples();
 
 	void deleteSampleByTagId(String tagid);
+
+	List<Sample> getSamplesBetweenDate(Date from, Date to);
+
+	//List<Sample> getSamplesByDistance
 }

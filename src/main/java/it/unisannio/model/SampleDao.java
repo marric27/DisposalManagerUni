@@ -1,5 +1,7 @@
 package it.unisannio.model;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.DeleteQuery;
@@ -15,5 +17,7 @@ public interface SampleDao extends MongoRepository<Sample, String> {
 
 	@DeleteQuery
 	void deleteByTagID(String tagid);
+
+    List<Sample> findByTimestampBetween(Date from, Date to);
 
 }

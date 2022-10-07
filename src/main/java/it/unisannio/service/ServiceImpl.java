@@ -1,5 +1,6 @@
 package it.unisannio.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,12 @@ public class ServiceImpl implements SampleService {
 	@Override
 	public void deleteSampleByTagId(String tagid) {
 		sampleDao.deleteByTagID(tagid);
+	}
+
+	@Override
+	public List<Sample> getSamplesBetweenDate(Date from, Date to) {
+		
+		return sampleDao.findByTimestampBetween(from, to);
 	}
 
 }
