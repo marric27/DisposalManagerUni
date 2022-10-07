@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Disposal Map</title>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
         integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
@@ -41,13 +41,7 @@
         }).addTo(map);
 
         async function getApi() {
-            myHeaders = new Headers({
-                'X-API-Key-Token': '365dca5f-7058-4a2e-b48a-72fc97eb7a40'
-            });
-            const response = await fetch("http://localhost:8080/api_v1/samples", {
-                headers: myHeaders,
-                method: 'GET'
-            })
+            const response = await fetch("http://localhost:8080/api_v1/samples")
             const obj = await response.json()
             return obj;
         }
@@ -68,10 +62,35 @@
     </script>
 
     <div id="query" style="width: 400; height: 400;">
+        <label for="list">Get Disposal by TAGID: </label>
+        <input id="tagid"></input>
+        <button type="button" onclick=getsamplebyid()>Submit</button>
+
+        <br><br>
+
         <label for="list">Get All Samples: </label>
-        <button type="button" onclick=wefunction()>Get Samples List!</button>
+        <button type="button" onclick=getall()>Submit</button>
+
     </div>
     <script>
+
+        async function getsamplebyid() {
+            if (document.getElementById('tagid').value) {
+                const response = await fetch('http://localhost:8080/api_v1/sample?id=' + document.getElementById('tagid').value);
+                const myJson = await response.json(); //extract JSON from the http response
+                // do something with myJson
+                console.log(myJson);
+            } else {
+                alert('Inserisci un TAGID');
+            }
+        }
+
+        async function getall() {
+            const response = await fetch('http://localhost:8080/api_v1/samples');
+            const myJson = await response.json(); //extract JSON from the http response
+            // do something with myJson
+            console.log(myJson);
+        }
 
     </script>
 </body>
