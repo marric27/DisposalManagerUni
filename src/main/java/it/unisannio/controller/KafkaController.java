@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,42 +42,42 @@ public class KafkaController {
 		return "Hello";
 	}
 
-	@GetMapping(value="/sample", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/sample", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Optional<Sample>> getSampleById(@RequestParam String id) {
 		return ResponseEntity.ok(service.getSampleByTagId(id));
 	}
 
-
-	@GetMapping(value="/samples", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/samples", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Sample>> getAllSamples() {
 		return ResponseEntity.ok(service.getAllSamples());
 	}
 
 	@PostMapping("/producer")
-	public String sendMessage(@RequestBody JsonNode sample)	{
+	public String sendMessage(@RequestBody JsonNode sample) {
 		kafkaProducer.send(sample);
-		return "Message sent successfully to the Kafka topic topic  "+sample;
+		return "Message sent successfully to the Kafka topic topic  " + sample;
 	}
 
 	// query arco temporale
-	@GetMapping(value="/between", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Sample>> getAllSamplesByDate() throws ParseException {//TODO
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date from = sdf.parse("2021-07-17");
-		Date to = sdf.parse("2021-08-17");
+	@GetMapping(value = "/between", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Sample>> getAllSamplesByDate(
+			@RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+			@RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to) throws ParseException {
+
 		return ResponseEntity.ok(service.getSamplesBetweenDate(from, to));
 	}
 
-
 	// query disposal conferiti
-	@GetMapping(value="/disposal")
-	public String getDisposalConferiti(@RequestParam String id) {
-		
-		if(service.existsById(id)) return "Disposal con TagID " + id + " conferito ";
-		else return "Disposal con TagID " + id + " non conferito ";
-
+	@GetMapping(value = "/disposal")
+	public ResponseEntity<String> getDisposalConferiti(@RequestParam List<String> id) {
+		String output = "";
+		for (String s : id) {
+			if (service.existsById(s))
+				output += "Il Disposal con TagID <b>" + s + "</b> è stato <b>conferito</b> <br>";
+			else
+				output += "Il Disposal con TagID <b>" + s + "</b> è <b>non conferito</b> <br>";
+		}
+		return ResponseEntity.ok(output);
 	}
-
-
 
 }
