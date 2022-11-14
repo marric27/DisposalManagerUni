@@ -25,6 +25,12 @@ import it.unisannio.service.SampleService;
 public class Consumer {
 	private final Logger LOG = LoggerFactory.getLogger(Consumer.class);
 
+	// costanti dei filtri
+	final String PREFIX = "57434F4D50";
+	final int OCCURRENCY = 2000;
+	final int FROM_TIME = 1, TO_TIME = 20;
+	final int DISTANCE = 2500;
+
 	@Autowired
 	SampleService service;
 
@@ -36,9 +42,9 @@ public class Consumer {
 		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
 		LOG.info("Received Sample information : {}", jsonNode);
 
-		if (s.getTagID().startsWith("57434F4D50")) {
-			if (s.getOccurency() > 2000) { // TODO valore soglia da definire
-				if (s.getTimestamp().getHour() < 20 && s.getTimestamp().getHour() > 1) { // TODO soglia da scegliere
+		if (s.getTagID().startsWith(PREFIX)) {
+			if (s.getOccurency() > OCCURRENCY) {
+				if (s.getTimestamp().getHour() < TO_TIME && s.getTimestamp().getHour() > FROM_TIME) {
 					if (coordinateDistanceCompare(s)) {
 						if (!service.existsById(s.getTagID())) {
 							LOG.info("sample non esistente quindi inserisco");
@@ -94,7 +100,7 @@ public class Consumer {
 				.getEllipsoidalDistance(); // Distance between Point A and Point B
 
 		LOG.info("Distanza in metri tra i due punti : {}", distance);
-		return distance < 5000 ? true : false; // TODO soglia da definire
+		return distance < DISTANCE ? true : false;
 	}
 
 	public static class CollectionPoint {
