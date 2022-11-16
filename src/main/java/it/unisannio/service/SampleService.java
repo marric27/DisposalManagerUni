@@ -20,5 +20,5 @@ public interface SampleService {
 
 	List<Sample> getSamplesBetweenDate(Date from, Date to);
 
-	//List<Sample> getSamplesByDistance
+	List<Sample> getSamplesByDistance(double lat, double lon, double dis);
 }

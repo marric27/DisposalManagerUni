@@ -73,4 +73,15 @@ public class KafkaController {
 		return ResponseEntity.ok(output);
 	}
 
+	// query disposal per distanza
+	@GetMapping(value = "/distance", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Sample>> getSamplesByDistance(
+			@RequestParam("lat") double lat,
+			@RequestParam("lon") double lon,
+			@RequestParam("dis") double dis) {
+
+		return ResponseEntity.ok(service.getSamplesByDistance(lat, lon, dis));
+	}
+
+
 }
