@@ -14,12 +14,8 @@ import it.unisannio.model.Sample;
 import it.unisannio.model.SampleDao;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class ServiceImpl implements SampleService {
-	private final Logger LOG = LoggerFactory.getLogger(ServiceImpl.class);
 
 	@Autowired
 	SampleDao sampleDao;

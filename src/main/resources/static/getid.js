@@ -8,17 +8,15 @@ var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var theMarker = []
-async function getSamplesByDistance() {
+async function getSamplesById() {
 
-    let lat = document.getElementById('lat').value
-    let lon = document.getElementById('lon').value
-    let dis = document.getElementById('dis').value
+    let tagid = document.getElementById('tagid').value
 
-    const response = await fetch('http://localhost:8080/api_v1/distance?lat=' + lat + '&lon=' + lon + '&dis=' + dis)
-    const responseDistance = await response.json();
+    const response = await fetch('http://localhost:8080/api_v1/sample?id=' + tagid)
+    const r = await response.json();
     //console.log(responseDistance)
     let output = ' '
-    responseDistance.forEach(function (r) {
+    r/*.forEach(function (r) {*/
         output +=
             `<tr class="user-element">
                 <td class="first-name">${r.tagID}</td>
@@ -32,7 +30,7 @@ async function getSamplesByDistance() {
             map.removeLayer(theMarker);
         };
         theMarker = L.marker([r['latitude'], r['longitude']]).addTo(map)
-    });
+    //});
 
 
     document.getElementById('user-list').innerHTML = output;

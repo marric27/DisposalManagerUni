@@ -60,7 +60,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./position.html" class="nav-link active">
+                    <a href="./position.html" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#speedometer2" />
                         </svg>
@@ -68,11 +68,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./getbyid.html" class="nav-link text-white">
-                      <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-                      Get Disposal by TagID
+                    <a href="./getbyid.html" class="nav-link active">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#speedometer2" />
+                        </svg>
+                        Get Disposal by TagID
                     </a>
-                  </li>
+                </li>
             </ul>
         </div>
 
@@ -82,16 +84,12 @@
             </div>
             <br><br>
             <div id="query" style="width: 400; height: 400;">
-                <form>
-                    <label for="start">Latitude:</label>
-                    <input id="lat" type="number" name="trip-start" value="41.129840833">
-                    <label for="start">Longitude:</label>
-                    <input id="lon" type="number" name="trip-start" value="14.786057667">
-                    <label for="start">Distance (meters):</label>
-                    <input id="dis" type="number" name="trip-start" value="200">
-                    <button type="button" onclick=getSamplesByDistance()>Submit</button>
-                </form>
-                <br>
+                <br><br>
+
+                    <label for="start">Disposal TagID:</label>
+                    <input id="tagid" type="text">
+                    <button type="button" onclick=getSamplesById()>Submit</button>
+                <br><br>
                 <table class="table">
                     <thead class="table-header">
                         <tr class="round-head">
@@ -107,12 +105,14 @@
         </div>
     </main>
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
         integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
-    <script src="./position.js"></script>
+    <script src="./getid.js"></script>
 </body>
 
 </html>
