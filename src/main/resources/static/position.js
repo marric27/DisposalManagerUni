@@ -1,13 +1,5 @@
 
 
-var map = L.map('map').setView([41.133118167, 14.783774], 14);
-
-var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
-var theMarker = []
 async function getSamplesByDistance() {
 
     let lat = document.getElementById('lat').value
@@ -28,10 +20,7 @@ async function getSamplesByDistance() {
             </tr>`
             ;
             
-        if (theMarker != undefined) {
-            map.removeLayer(theMarker);
-        };
-        theMarker = L.marker([r['latitude'], r['longitude']]).addTo(map)
+        
     });
 
 
