@@ -36,7 +36,7 @@ public class Consumer {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	@KafkaListener(topics = "topic", groupId = "group")
+	@KafkaListener(topics = "topic3", groupId = "group")
 	public void listen(JsonNode jsonNode)
 			throws JsonMappingException, JsonProcessingException, ParseException, ClassNotFoundException, SQLException {
 		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
@@ -45,7 +45,7 @@ public class Consumer {
 		if (s.getTagID().startsWith(PREFIX)) {
 			if (s.getOccurency() > OCCURRENCY) {
 				if (s.getTimestamp().getHour() < TO_TIME && s.getTimestamp().getHour() > FROM_TIME) {
-					if (coordinateDistanceCompare(s)) {
+					//if (coordinateDistanceCompare(s)) {
 						if (!service.existsById(s.getTagID())) {
 							LOG.info("sample non esistente quindi inserisco");
 							service.saveSample(s);
@@ -63,10 +63,10 @@ public class Consumer {
 								LOG.info("Sample updated: {}", jsonNode);
 							}
 						}
-					}
-				}
-			}
-		}
+					//} else LOG.info("Sample not inserted due to wrong coordinate: {}", jsonNode);
+				} else LOG.info("Sample not inserted due to wrong timestamp: {}", jsonNode);
+			} else LOG.info("Sample not inserted due to wrong occurrency: {}", jsonNode);
+		} else LOG.info("Sample not inserted due to wrong prefix: {}", jsonNode);
 	}
 
 	// coordinate
