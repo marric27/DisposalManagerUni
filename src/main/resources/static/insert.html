@@ -68,7 +68,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./getbyid.html" class="nav-link active">
+                    <a href="./getbyid.html" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#speedometer2" />
                         </svg>
@@ -76,33 +76,43 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./insert.html" class="nav-link text-white">
-                      <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-                      Insert Disposal
+                    <a href="./insert.html" class="nav-link active">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#speedometer2" />
+                        </svg>
+                        Insert Disposal
                     </a>
-                  </li>
+                </li>
             </ul>
         </div>
 
         <div class="overflow-auto" style="margin:10px; padding: 25px;">
-            <div class="container">
-                <div id="map" style="width: 1200; height: 800;"></div>
-            </div>
+
             <br><br>
             <div id="query" style="width: 400; height: 400;">
                 <br><br>
-
-                    <label for="start">Disposal TagID:</label>
-                    <input id="tagid" type="text" size="75">
-                    <button type="button" onclick=getSamplesById()>Submit</button>
+                <form>
+                    <label for="taid">TagID</label><br>
+                    <input id="tid" type="text" name="trip-start">
+                    <br>
+                    <label for="ttidl">TruckID</label><br>
+                    <input id="ttid" type="text" name="trip-start" value="TRUCK1">
+                    <br>
+                    <label for="timel">Timestamp</label><br>
+                    <input id="time" type="text" name="trip-start" value="2021-07-17 18:49:39">
+                    <br>
+                    <label for="start">Occurrency</label><br>
+                    <input id="occ" type="number" name="trip-start" value="1000">
+                    <br>
+                    <label for="start">Lat</label><br>
+                    <input id="lat" type="number" name="trip-start" value="41"><br>
+                    <label for="start">Lon</label><br>
+                    <input id="lon" type="number" name="trip-start" value="41">
+                    <br>
+                    <button type="button" onclick=insertSample()>Submit</button>
+                </form>
                 <br><br>
-                <table class="table">
-                    <thead class="table-header">
-                        <tr class="round-head">
-                        </tr>
-                    </thead>
-                    <tbody class="table-stripped overflow-auto" id="user-list"></tbody>
-                </table>
+
             </div>
         </div>
     </main>
@@ -114,7 +124,7 @@
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
         integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
-    <script src="./getid.js"></script>
+    <script src="./insert.js"></script>
 </body>
 
 </html>
