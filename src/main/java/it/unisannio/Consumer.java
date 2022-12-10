@@ -1,5 +1,10 @@
 package it.unisannio;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -36,37 +41,60 @@ public class Consumer {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	@KafkaListener(topics = "topic3", groupId = "group")
+	@KafkaListener(topics = "topic5", groupId = "group")
 	public void listen(JsonNode jsonNode)
-			throws JsonMappingException, JsonProcessingException, ParseException, ClassNotFoundException, SQLException {
-		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
-		LOG.info("Received Sample information : {}", jsonNode);
+			throws ParseException, ClassNotFoundException, SQLException, IOException {
 
+		Sample s = mapper.readValue(jsonNode.toString(), Sample.class);
+		ThreadManagerSingleton.getInstance().getStartFilter().process(s);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// LOG.info("Received Sample information : {}", jsonNode);
+
+		
+/*
 		if (s.getTagID().startsWith(PREFIX)) {
 			if (s.getOccurency() > OCCURRENCY) {
 				if (s.getTimestamp().getHour() < TO_TIME && s.getTimestamp().getHour() > FROM_TIME) {
-					//if (coordinateDistanceCompare(s)) {
-						if (!service.existsById(s.getTagID())) {
-							LOG.info("sample non esistente quindi inserisco");
+					System.out.println("sample" +s);
+					// if (coordinateDistanceCompare(s)) {
+					if (!service.existsById(s.getTagID())) {
+						LOG.info("sample non esistente quindi inserisco");
+						service.saveSample(s);
+
+						LOG.info("Sample inserted: {}", jsonNode);
+					} else {
+						LOG.info("sample esistente quindi confronto e inserisco");
+						Sample oldsample = service.getSampleByTagId(s.getTagID()).orElseThrow();
+
+						int occ = oldsample.getOccurency();
+
+						if (s.getOccurency() >= occ) {
+							service.deleteSampleByTagId(s.getTagID());
 							service.saveSample(s);
-
-							LOG.info("Sample inserted: {}", jsonNode);
-						} else {
-							LOG.info("sample esistente quindi confronto e inserisco");
-							Sample oldsample = service.getSampleByTagId(s.getTagID()).orElseThrow();
-
-							int occ = oldsample.getOccurency();
-
-							if (s.getOccurency() >= occ) {
-								service.deleteSampleByTagId(s.getTagID());
-								service.saveSample(s);
-								LOG.info("Sample updated: {}", jsonNode);
-							}
+							LOG.info("Sample updated: {}", jsonNode);
 						}
-					//} else LOG.info("Sample not inserted due to wrong coordinate: {}", jsonNode);
-				} else LOG.info("Sample not inserted due to wrong timestamp: {}", jsonNode);
-			} else LOG.info("Sample not inserted due to wrong occurrency: {}", jsonNode);
-		} else LOG.info("Sample not inserted due to wrong prefix: {}", jsonNode);
+					}
+					// } else LOG.info("Sample not inserted due to wrong coordinate: {}", jsonNode);
+				} else
+					LOG.info("Sample not inserted due to wrong timestamp: {}", jsonNode);
+			} else
+				LOG.info("Sample not inserted due to wrong occurrency: {}", jsonNode);
+		} else
+			LOG.info("Sample not inserted due to wrong prefix: {}", jsonNode);
+ */
 	}
 
 	// coordinate
@@ -105,15 +133,30 @@ public class Consumer {
 
 	public static class CollectionPoint {
 		private double lat, lon;
-		public CollectionPoint() {};
+
+		public CollectionPoint() {
+		};
+
 		public CollectionPoint(double lat, double lon) {
 			super();
 			this.lat = lat;
 			this.lon = lon;
 		}
-		public double getLat() { return lat; }
-		public void setLat(double lat) { this.lat = lat; }
-		public double getLon() { return lon; }
-		public void setLon(double lon) { this.lon = lon; }
+
+		public double getLat() {
+			return lat;
+		}
+
+		public void setLat(double lat) {
+			this.lat = lat;
+		}
+
+		public double getLon() {
+			return lon;
+		}
+
+		public void setLon(double lon) {
+			this.lon = lon;
+		}
 	}
 }
